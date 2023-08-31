@@ -72,8 +72,9 @@ runInputLoop ct@ChatTerminal {termState, liveMessageState} cc = forever $ do
       Right SendGroupMessageQuote {} -> True
       Right SendMessageBroadcast {} -> True
       _ -> False
+    -- TODO group-direct: directGroupMemberName in output
     startLiveMessage :: Either a ChatCommand -> ChatResponse -> IO ()
-    startLiveMessage (Right (SendLiveMessage chatName msg)) (CRNewChatItem _ (AChatItem cType SMDSnd _ ChatItem {meta = CIMeta {itemId}})) = do
+    startLiveMessage (Right (SendLiveMessage chatName directGroupMemberName msg)) (CRNewChatItem _ (AChatItem cType SMDSnd _ ChatItem {meta = CIMeta {itemId}})) = do
       whenM (isNothing <$> readTVarIO liveMessageState) $ do
         let s = T.unpack msg
             int = case cType of SCTGroup -> 5000000; _ -> 3000000 :: Int

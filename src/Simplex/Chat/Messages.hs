@@ -128,6 +128,9 @@ instance ToJSON AChatInfo where
   toJSON (AChatInfo _ c) = J.toJSON c
   toEncoding (AChatInfo _ c) = J.toEncoding c
 
+-- either this or CIDirection:
+-- directGroupMember :: Maybe GroupMember
+-- CIDirection seems to be better suited
 data ChatItem (c :: ChatType) (d :: MsgDirection) = ChatItem
   { chatDir :: CIDirection c d,
     meta :: CIMeta c d,
@@ -143,6 +146,8 @@ instance MsgDirectionI d => ToJSON (ChatItem c d) where
   toJSON = J.genericToJSON J.defaultOptions {J.omitNothingFields = True}
   toEncoding = J.genericToEncoding J.defaultOptions {J.omitNothingFields = True}
 
+-- CIGroupSndDirect / CIGroupSnd with Maybe GroupMember parameter for direct receiving member?
+-- CIGroupRcvDirect / CIGroupRcv with Bool parameter for direct sending member?
 data CIDirection (c :: ChatType) (d :: MsgDirection) where
   CIDirectSnd :: CIDirection 'CTDirect 'MDSnd
   CIDirectRcv :: CIDirection 'CTDirect 'MDRcv

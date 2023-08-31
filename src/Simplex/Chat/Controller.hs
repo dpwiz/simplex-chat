@@ -235,7 +235,7 @@ data ChatCommand
   | APIGetChat ChatRef ChatPagination (Maybe String)
   | APIGetChatItems ChatPagination (Maybe String)
   | APIGetChatItemInfo ChatRef ChatItemId
-  | APISendMessage {chatRef :: ChatRef, liveMessage :: Bool, ttl :: Maybe Int, composedMessage :: ComposedMessage}
+  | APISendMessage {chatRef :: ChatRef, liveMessage :: Bool, ttl :: Maybe Int, directGroupMemberId :: Maybe GroupMemberId, composedMessage :: ComposedMessage}
   | APIUpdateChatItem {chatRef :: ChatRef, chatItemId :: ChatItemId, liveMessage :: Bool, msgContent :: MsgContent}
   | APIDeleteChatItem ChatRef ChatItemId CIDeleteMode
   | APIDeleteMemberChatItem GroupId GroupMemberId ChatItemId
@@ -346,8 +346,8 @@ data ChatCommand
   | AddressAutoAccept (Maybe AutoAccept)
   | AcceptContact IncognitoEnabled ContactName
   | RejectContact ContactName
-  | SendMessage ChatName Text
-  | SendLiveMessage ChatName Text
+  | SendMessage ChatName (Maybe ContactName) Text
+  | SendLiveMessage ChatName (Maybe ContactName) Text
   | SendMessageQuote {contactName :: ContactName, msgDir :: AMsgDirection, quotedMsg :: Text, message :: Text}
   | SendMessageBroadcast Text -- UserId (not used in UI)
   | DeleteMessage ChatName Text
@@ -375,17 +375,17 @@ data ChatCommand
   | GroupLinkMemberRole GroupName GroupMemberRole
   | DeleteGroupLink GroupName
   | ShowGroupLink GroupName
-  | SendGroupMessageQuote {groupName :: GroupName, contactName_ :: Maybe ContactName, quotedMsg :: Text, message :: Text}
+  | SendGroupMessageQuote {groupName :: GroupName, directGroupMemberName :: Maybe ContactName, contactName_ :: Maybe ContactName, quotedMsg :: Text, message :: Text}
   | LastChats (Maybe Int) -- UserId (not used in UI)
   | LastMessages (Maybe ChatName) Int (Maybe String) -- UserId (not used in UI)
   | LastChatItemId (Maybe ChatName) Int -- UserId (not used in UI)
   | ShowChatItem (Maybe ChatItemId) -- UserId (not used in UI)
   | ShowChatItemInfo ChatName Text
   | ShowLiveItems Bool
-  | SendFile ChatName FilePath
-  | SendImage ChatName FilePath
-  | ForwardFile ChatName FileTransferId
-  | ForwardImage ChatName FileTransferId
+  | SendFile ChatName (Maybe ContactName) FilePath
+  | SendImage ChatName (Maybe ContactName) FilePath
+  | ForwardFile ChatName (Maybe ContactName) FileTransferId
+  | ForwardImage ChatName (Maybe ContactName) FileTransferId
   | SendFileDescription ChatName FilePath
   | ReceiveFile {fileId :: FileTransferId, fileInline :: Maybe Bool, filePath :: Maybe FilePath}
   | SetFileToReceive FileTransferId
