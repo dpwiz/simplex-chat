@@ -442,6 +442,7 @@ executable simplex-chat
     , email-validate ==2.3.*
     , exceptions ==0.10.*
     , filepath ==1.4.*
+    , ghc-debug-stub
     , http-types ==0.12.*
     , http2 >=4.2.2 && <4.3
     , memory ==0.18.*

@@ -17,9 +17,10 @@ import Simplex.Chat.View (serializeChatResponse)
 import Simplex.Messaging.Client (NetworkConfig (..))
 import System.Directory (getAppUserDataDirectory)
 import System.Terminal (withTerminal)
+import GHC.Debug.Stub
 
 main :: IO ()
-main = do
+main = withGhcDebug $ do
   appDir <- getAppUserDataDirectory "simplex"
   opts@ChatOpts {chatCmd, chatServerPort} <- getChatOpts appDir "simplex_v1"
   if null chatCmd
