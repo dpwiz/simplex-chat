@@ -3352,22 +3352,19 @@ agentSubscriber = do
 subscribeUserConnections :: VersionRangeChat -> Bool -> User -> CM ()
 subscribeUserConnections vr onlyNeeded user = do
   -- get user connections
+  env <- ask
   (conns, ctConns, ucs, gs, mConns, sfts, rfts, pcConns) <-
-    if onlyNeeded
-      then do
-        (conns, entities) <- withStore' $ \a -> getConnectionsToSubscribe a vr user
-        let (ctConns, ucs, mConns, sfts, rfts, pcConns) = foldl' addEntity ([], [], [], M.empty, M.empty, []) entities
-        pure (conns, ctConns, ucs, [], mConns, sfts, rfts, pcConns)
-      else do
-        withStore' (`unsetConnectionToSubscribe` user)
-        ctConns <- getContactConns
-        (ucConns, ucs) <- getUserContactLinkConns
-        (gs, mConns) <- getGroupMemberConns
-        (sftConns, sfts) <- getSndFileTransferConns
-        (rftConns, rfts) <- getRcvFileTransferConns
-        pcConns <- getPendingContactConns
-        let conns = concat [ctConns, ucConns, mConns, sftConns, rftConns, pcConns]
-        pure (conns, ctConns, ucs, gs, mConns, sfts, rfts, pcConns)
+    withStore' $ \db -> flip runReaderT env $ do
+      -- run in one transaction so onlyNeeded will be atomic
+      ctConns <- getContactConns db
+      (ucConns, ucs) <- getUserContactLinkConns db
+      (gs, mConns) <- getGroupMemberConns db
+      (sftConns, sfts) <- getSndFileTransferConns db
+      (rftConns, rfts) <- getRcvFileTransferConns db
+      pcConns <- getPendingContactConns db
+      liftIO $ unsetConnectionToSubscribe db user
+      let conns = concat [ctConns, ucConns, mConns, sftConns, rftConns, pcConns]
+      pure (conns, ctConns, ucs, gs, mConns, sfts, rfts, pcConns)
   -- detach subscription and result processing
   void . lift . forkIO . runSubscriber $ do
     rs <- withAgent (`Agent.subscribeConnections` conns) -- subscribe using batched commands
@@ -3384,35 +3381,28 @@ subscribeUserConnections vr onlyNeeded user = do
   where
     runSubscriber :: CM () -> CM' ()
     runSubscriber action = tryAllErrors' mkChatError action >>= either (logError . tshow) pure
-    addEntity (cts, ucs, ms, sfts, rfts, pcs) = \case
-      RcvDirectMsgConnection c (Just _ct) -> let cts' = aConnId c : cts in (cts', ucs, ms, sfts, rfts, pcs)
-      RcvDirectMsgConnection c Nothing -> let pcs' = aConnId c : pcs in (cts, ucs, ms, sfts, rfts, pcs')
-      RcvGroupMsgConnection c _g _m -> let ms' = aConnId c : ms in (cts, ucs, ms', sfts, rfts, pcs)
-      SndFileConnection c sft -> let sfts' = M.insert (aConnId c) sft sfts in (cts, ucs, ms, sfts', rfts, pcs)
-      RcvFileConnection c rft -> let rfts' = M.insert (aConnId c) rft rfts in (cts, ucs, ms, sfts, rfts', pcs)
-      UserContactConnection c uc -> let ucs' = (aConnId c, isNothing $ userContactGroupId uc) : ucs in (cts, ucs', ms, sfts, rfts, pcs)
-    getContactConns :: CM [ConnId]
-    getContactConns = withStore_ getUserContactConnIds
-    getUserContactLinkConns :: CM ([ConnId], [(ConnId, Bool)])
-    getUserContactLinkConns = do
-      ucs <- withStore_ getUserContactLinks
+    getContactConns :: DB.Connection -> CM' [ConnId]
+    getContactConns db = emptyOnError $ getUserContactConnIds db user onlyNeeded
+    getUserContactLinkConns :: DB.Connection -> CM' ([ConnId], [(ConnId, Bool)])
+    getUserContactLinkConns db = do
+      ucs <- emptyOnError $ getUserContactLinks db user onlyNeeded
       pure (map fst ucs, ucs)
-    getGroupMemberConns :: CM ([(GroupInfo, [ConnId])], [ConnId])
-    getGroupMemberConns = do
-      gs <- withStore_ (`getUserGroupMemberConnIds` vr)
+    getGroupMemberConns :: DB.Connection -> CM' ([(GroupInfo, [ConnId])], [ConnId])
+    getGroupMemberConns db = do
+      gs <- emptyOnError $ getUserGroupMemberConnIds db vr user onlyNeeded
       pure (gs, concatMap snd gs)
-    getSndFileTransferConns :: CM ([ConnId], Map ConnId SndFileTransfer)
-    getSndFileTransferConns = do
-      sfts <- withStore_ getLiveSndFileTransfers
+    getSndFileTransferConns :: DB.Connection -> CM' ([ConnId], Map ConnId SndFileTransfer)
+    getSndFileTransferConns db = do
+      sfts <- emptyOnError $ getLiveSndFileTransfers db user onlyNeeded
       let connIds = map sndFileTransferConnId sfts
       pure (connIds, M.fromList $ zip connIds sfts)
-    getRcvFileTransferConns :: CM ([ConnId], Map ConnId RcvFileTransfer)
-    getRcvFileTransferConns = do
-      rfts <- withStore_ getLiveRcvFileTransfers
+    getRcvFileTransferConns :: DB.Connection -> CM' ([ConnId], Map ConnId RcvFileTransfer)
+    getRcvFileTransferConns db = do
+      rfts <- emptyOnError $ getLiveRcvFileTransfers db user onlyNeeded
       let rftPairs = mapMaybe (\ft -> (,ft) <$> liveRcvFileTransferConnId ft) rfts
       pure (map fst rftPairs, M.fromList rftPairs)
-    getPendingContactConns :: CM [ConnId]
-    getPendingContactConns = withStore_ getPendingContactConnections
+    getPendingContactConns :: DB.Connection -> CM' [ConnId]
+    getPendingContactConns db = emptyOnError $ getPendingContactConnIds db user onlyNeeded
     contactSubsToView :: Map ConnId AgentErrorType -> [ConnId] -> Map ConnId ContactName -> Bool -> CM ()
     contactSubsToView errs cts names ce = ifM (asks $ coreApi . config) notifyAPI notifyCLI
       where
@@ -3437,11 +3427,13 @@ subscribeUserConnections vr onlyNeeded user = do
       forM_ addresses $ \(acId, _uc) -> toView $ CRUserAddrSubStatus {user, userContactError = (`ChatErrorAgent` Nothing) <$> M.lookup acId errs}
       let groups = S.fromList $ map fst groupLinks
           errGroups = M.restrictKeys errs groups
-      unless (S.null groups) $ toView CRUserGroupLinksSubSummary
-        { user,
-          okSubs = S.size groups - M.size errGroups,
-          errSubs = M.size errGroups
-        }
+      unless (S.null groups) $
+        toView
+          CRUserGroupLinksSubSummary
+            { user,
+              okSubs = S.size groups - M.size errGroups,
+              errSubs = M.size errGroups
+            }
     groupSubsToView :: Map ConnId AgentErrorType -> [(GroupInfo, [ConnId])] -> [ConnId] -> Map ConnId ContactName -> Bool -> CM ()
     groupSubsToView errs gs allMembers names ce = do
       mapM_ (uncurry groupSub) gs
@@ -3451,7 +3443,7 @@ subscribeUserConnections vr onlyNeeded user = do
         errConns = M.restrictKeys errs conns
         groupSub :: GroupInfo -> [ConnId] -> CM ()
         groupSub g@GroupInfo {membership} groupMembers = do
-          when ce $ mapM_ (toView . uncurry (CRMemberSubError user g) ) mErrors
+          when ce $ mapM_ (toView . uncurry (CRMemberSubError user g)) mErrors
           toView groupEvent
           where
             mErrors :: [(ContactName, ChatError)]
@@ -3484,8 +3476,8 @@ subscribeUserConnections vr onlyNeeded user = do
       where
         conns = S.fromList pcs
         errConns = M.restrictKeys errs conns
-    withStore_ :: (DB.Connection -> User -> IO [a]) -> CM [a]
-    withStore_ a = withStore' (`a` user) `catchChatError` \e -> toView (CRChatError (Just user) e) $> []
+    emptyOnError :: IO [a] -> CM' [a]
+    emptyOnError a = liftIO a `catchChatError'` \e -> toView' (CRChatError (Just user) e) $> []
 cleanupManager :: CM ()
 cleanupManager = do
   interval <- asks (cleanupManagerInterval . config)

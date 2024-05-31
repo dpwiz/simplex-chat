@@ -350,17 +350,18 @@ getUserAddressConnections db vr User {userId} = do
           |]
           (userId, userId)
 
-getUserContactLinks :: DB.Connection -> User -> IO [(ConnId, Bool)]
-getUserContactLinks db User {userId} =
-  DB.query
-    db
-    [sql|
-      SELECT c.agent_conn_id, uc.group_id IS NULL
-      FROM connections c
-      JOIN user_contact_links uc ON c.user_contact_link_id = uc.user_contact_link_id
-      WHERE c.user_id = ? AND uc.user_id = ?
-    |]
-    (userId, userId)
+getUserContactLinks :: DB.Connection -> User -> Bool -> IO [(ConnId, Bool)]
+getUserContactLinks db User {userId} toSubscribe =
+  DB.query db (if toSubscribe then query <> " AND c.to_subscribe = 1" else query) (userId, userId)
+  where
+    query =
+      [sql|
+        SELECT c.agent_conn_id, uc.group_id IS NULL
+        FROM connections c
+        JOIN user_contact_links uc ON c.user_contact_link_id = uc.user_contact_link_id
+        WHERE c.user_id = ?
+          AND uc.user_id = ?
+      |]
 
 deleteUserAddress :: DB.Connection -> User -> IO ()
 deleteUserAddress db user@User {userId} = do

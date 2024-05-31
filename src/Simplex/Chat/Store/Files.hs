@@ -119,8 +119,8 @@ import Simplex.Messaging.Protocol (SubscriptionMode (..))
 import Simplex.Messaging.Version
 import System.FilePath (takeFileName)
 
-getLiveSndFileTransfers :: DB.Connection -> User -> IO [SndFileTransfer]
-getLiveSndFileTransfers db User {userId} = do
+getLiveSndFileTransfers :: DB.Connection -> User -> Bool -> IO [SndFileTransfer]
+getLiveSndFileTransfers db User {userId} toSubscribe = do
   cutoffTs <- addUTCTime (-week) <$> getCurrentTime
   fileIds :: [Int64] <-
     map fromOnly
@@ -137,13 +137,13 @@ getLiveSndFileTransfers db User {userId} = do
             AND s.created_at > ?
         |]
         (userId, FSNew, FSAccepted, FSConnected, cutoffTs)
-  concatMap (filter liveTransfer) . rights <$> mapM (getSndFileTransfers_ db userId) fileIds
+  concatMap (filter liveTransfer) . rights <$> mapM (getSndFileTransfers_ db userId toSubscribe) fileIds
   where
     liveTransfer :: SndFileTransfer -> Bool
     liveTransfer SndFileTransfer {fileStatus} = fileStatus `elem` [FSNew, FSAccepted, FSConnected]
 
-getLiveRcvFileTransfers :: DB.Connection -> User -> IO [RcvFileTransfer]
-getLiveRcvFileTransfers db user@User {userId} = do
+getLiveRcvFileTransfers :: DB.Connection -> User -> Bool -> IO [RcvFileTransfer]
+getLiveRcvFileTransfers db User {userId} toSubscribe = do
   cutoffTs <- addUTCTime (-week) <$> getCurrentTime
   fileIds :: [Int64] <-
     map fromOnly
@@ -159,7 +159,7 @@ getLiveRcvFileTransfers db user@User {userId} = do
             AND r.created_at > ?
         |]
         (userId, FSAccepted, FSConnected, cutoffTs)
-  rights <$> mapM (runExceptT . getRcvFileTransfer db user) fileIds
+  rights <$> mapM (runExceptT . getRcvFileTransfer_ db userId toSubscribe) fileIds
 
 getPendingSndChunks :: DB.Connection -> Int64 -> Int64 -> IO [Integer]
 getPendingSndChunks db fileId connId =
@@ -665,31 +665,33 @@ getRcvFileTransferById db fileId = do
   (user,) <$> getRcvFileTransfer db user fileId
 
 getRcvFileTransfer :: DB.Connection -> User -> FileTransferId -> ExceptT StoreError IO RcvFileTransfer
-getRcvFileTransfer db User {userId} = getRcvFileTransfer_ db userId
+getRcvFileTransfer db User {userId} = getRcvFileTransfer_ db userId False
 
-getRcvFileTransfer_ :: DB.Connection -> UserId -> FileTransferId -> ExceptT StoreError IO RcvFileTransfer
-getRcvFileTransfer_ db userId fileId = do
+getRcvFileTransfer_ :: DB.Connection -> UserId -> Bool -> FileTransferId -> ExceptT StoreError IO RcvFileTransfer
+getRcvFileTransfer_ db userId toSubscribe fileId = do
   rftRow <-
     ExceptT . firstRow id (SERcvFileNotFound fileId) $
       DB.query
         db
-        [sql|
-          SELECT r.file_status, r.file_queue_info, r.group_member_id, f.file_name,
-            f.file_size, f.chunk_size, f.cancelled, cs.local_display_name, m.local_display_name,
-            f.file_path, f.file_crypto_key, f.file_crypto_nonce, r.file_inline, r.rcv_file_inline,
-            r.agent_rcv_file_id, r.agent_rcv_file_deleted, r.user_approved_relays,
-            c.connection_id, c.agent_conn_id
-          FROM rcv_files r
-          JOIN files f USING (file_id)
-          LEFT JOIN connections c ON r.file_id = c.rcv_file_id
-          LEFT JOIN contacts cs USING (contact_id)
-          LEFT JOIN group_members m USING (group_member_id)
-          WHERE f.user_id = ? AND f.file_id = ?
-        |]
+        (if toSubscribe then query <> " AND c.to_subscribe = 1" else query)
         (userId, fileId)
   rfd_ <- liftIO $ getRcvFileDescrByRcvFileId_ db fileId
   rcvFileTransfer rfd_ rftRow
   where
+    query =
+      [sql|
+        SELECT r.file_status, r.file_queue_info, r.group_member_id, f.file_name,
+          f.file_size, f.chunk_size, f.cancelled, cs.local_display_name, m.local_display_name,
+          f.file_path, f.file_crypto_key, f.file_crypto_nonce, r.file_inline, r.rcv_file_inline,
+          r.agent_rcv_file_id, r.agent_rcv_file_deleted, r.user_approved_relays,
+          c.connection_id, c.agent_conn_id
+        FROM rcv_files r
+        JOIN files f USING (file_id)
+        LEFT JOIN connections c ON r.file_id = c.rcv_file_id
+        LEFT JOIN contacts cs USING (contact_id)
+        LEFT JOIN group_members m USING (group_member_id)
+        WHERE f.user_id = ? AND f.file_id = ?
+      |]
     rcvFileTransfer ::
       Maybe RcvFileDescr ->
       (FileStatus, Maybe ConnReqInvitation, Maybe Int64, String, Integer, Integer, Maybe Bool) :. (Maybe ContactName, Maybe ContactName, Maybe FilePath, Maybe C.SbKey, Maybe C.CbNonce, Maybe InlineFileMode, Maybe InlineFileMode, Maybe AgentRcvFileId, Bool, Bool) :. (Maybe Int64, Maybe AgentConnId) ->
@@ -915,13 +917,13 @@ getSndFileTransfer db user fileId = do
   pure (fileTransferMeta, sndFileTransfers)
 
 getSndFileTransfers :: DB.Connection -> User -> Int64 -> ExceptT StoreError IO [SndFileTransfer]
-getSndFileTransfers db User {userId} fileId = ExceptT $ getSndFileTransfers_ db userId fileId
+getSndFileTransfers db User {userId} fileId = ExceptT $ getSndFileTransfers_ db userId False fileId
 
-getSndFileTransfers_ :: DB.Connection -> UserId -> Int64 -> IO (Either StoreError [SndFileTransfer])
-getSndFileTransfers_ db userId fileId =
-  mapM sndFileTransfer
-    <$> DB.query
-      db
+getSndFileTransfers_ :: DB.Connection -> UserId -> Bool -> Int64 -> IO (Either StoreError [SndFileTransfer])
+getSndFileTransfers_ db userId toSubscribe fileId =
+  mapM sndFileTransfer <$> DB.query db (if toSubscribe then query <> " AND c.to_subscribe = 1" else query) (userId, fileId)
+  where
+    query =
       [sql|
         SELECT s.file_status, f.file_name, f.file_size, f.chunk_size, f.file_path, s.file_descr_id, s.file_inline, s.connection_id, c.agent_conn_id, s.group_member_id,
           cs.local_display_name, m.local_display_name
@@ -932,8 +934,6 @@ getSndFileTransfers_ db userId fileId =
         LEFT JOIN group_members m USING (group_member_id)
         WHERE f.user_id = ? AND f.file_id = ?
       |]
-      (userId, fileId)
-  where
     sndFileTransfer :: (FileStatus, String, Integer, Integer, FilePath) :. (Maybe Int64, Maybe InlineFileMode, Int64, AgentConnId, Maybe Int64, Maybe ContactName, Maybe ContactName) -> Either StoreError SndFileTransfer
     sndFileTransfer ((fileStatus, fileName, fileSize, chunkSize, filePath) :. (fileDescrId, fileInline, connId, agentConnId, groupMemberId, contactName_, memberName_)) =
       case contactName_ <|> memberName_ of
@@ -1018,7 +1018,7 @@ getLocalCryptoFile db userId fileId sent =
   liftIO (getFileTransferRow_ db userId fileId) >>= \case
     [(Nothing, Just _, _)] -> do
       when sent $ throwError $ SEFileNotFound fileId
-      RcvFileTransfer {fileStatus, cryptoArgs} <- getRcvFileTransfer_ db userId fileId
+      RcvFileTransfer {fileStatus, cryptoArgs} <- getRcvFileTransfer_ db userId False fileId
       case fileStatus of
         RFSComplete RcvFileInfo {filePath} -> pure $ CryptoFile filePath cryptoArgs
         _ -> throwError $ SEFileNotFound fileId

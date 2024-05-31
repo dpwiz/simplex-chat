@@ -12,17 +12,15 @@ module Simplex.Chat.Store.Connections
     getConnectionEntity,
     getConnectionEntityByConnReq,
     getContactConnEntityByConnReqHash,
-    getConnectionsToSubscribe,
     unsetConnectionToSubscribe,
     deleteConnectionRecord,
   )
 where
 
 import Control.Applicative ((<|>))
-import Control.Monad (forM)
 import Control.Monad.Except
 import Data.Int (Int64)
-import Data.Maybe (catMaybes, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Database.SQLite.Simple (Only (..), (:.) (..))
 import Database.SQLite.Simple.QQ (sql)
 import Simplex.Chat.Protocol
@@ -30,7 +28,6 @@ import Simplex.Chat.Store.Files
 import Simplex.Chat.Store.Groups
 import Simplex.Chat.Store.Shared
 import Simplex.Chat.Types
-import Simplex.Messaging.Agent.Protocol (ConnId)
 import Simplex.Messaging.Agent.Store.SQLite (firstRow, firstRow', maybeFirstRow)
 import qualified Simplex.Messaging.Agent.Store.SQLite.DB as DB
 import Simplex.Messaging.Util (eitherToMaybe)
@@ -211,13 +208,6 @@ getContactConnEntityByConnReqHash db vr user@User {userId} (cReqHash1, cReqHash2
         |]
         (userId, cReqHash1, cReqHash2, ConnDeleted)
   maybe (pure Nothing) (fmap eitherToMaybe . runExceptT . getConnectionEntity db vr user) connId_
-
-getConnectionsToSubscribe :: DB.Connection -> VersionRangeChat -> User -> IO ([ConnId], [ConnectionEntity])
-getConnectionsToSubscribe db vr user@User {userId} = do
-  connIds <- map fromOnly <$> DB.query db "SELECT agent_conn_id FROM connections WHERE user_id = ? AND to_subscribe = 1" (Only userId)
-  unsetConnectionToSubscribe db user
-  entities <- forM connIds $ fmap eitherToMaybe . runExceptT . getConnectionEntity db vr user . AgentConnId
-  pure (connIds, catMaybes entities)
 
 unsetConnectionToSubscribe :: DB.Connection -> User -> IO ()
 unsetConnectionToSubscribe db User {userId} = DB.execute db "UPDATE connections SET to_subscribe = 0 WHERE user_id = ? AND to_subscribe = 1" (Only userId)

@@ -64,7 +64,7 @@ module Simplex.Chat.Store.Direct
     deleteContactRequest,
     createAcceptedContact,
     getUserByContactRequestId,
-    getPendingContactConnections,
+    getPendingContactConnIds,
     getContactConnections,
     getConnectionById,
     getConnectionsContacts,
@@ -840,9 +840,11 @@ getUserByContactRequestId db contactRequestId =
   ExceptT . firstRow toUser (SEUserNotFoundByContactRequestId contactRequestId) $
     DB.query db (userQuery <> " JOIN contact_requests cr ON cr.user_id = u.user_id WHERE cr.contact_request_id = ?") (Only contactRequestId)
 
-getPendingContactConnections :: DB.Connection -> User -> IO [ConnId]
-getPendingContactConnections db User {userId} =
-  map fromOnly <$> DB.query db "SELECT agent_conn_id FROM connections WHERE user_id = ? AND conn_type = ? AND contact_id IS NULL" (userId, ConnContact)
+getPendingContactConnIds :: DB.Connection -> User -> Bool -> IO [ConnId]
+getPendingContactConnIds db User {userId} toSubscribe =
+  map fromOnly <$> DB.query db (if toSubscribe then query <> " AND to_subscribe = 1" else query) (userId, ConnContact)
+  where
+    query = "SELECT agent_conn_id FROM connections WHERE user_id = ? AND conn_type = ? AND contact_id IS NULL"
 
 getContactConnections :: DB.Connection -> VersionRangeChat -> UserId -> Contact -> IO [Connection]
 getContactConnections db vr userId Contact {contactId} =
@@ -864,32 +866,31 @@ getContactConnections db vr userId Contact {contactId} =
     connections [] = pure []
     connections rows = pure $ map (toConnection vr) rows
 
-getUserContactConnIds :: DB.Connection -> User -> IO [ConnId]
-getUserContactConnIds db User {userId} =
-  map fromOnly
-    <$> DB.query
-        db
-        [sql|
-          SELECT c.agent_conn_id
-          FROM contacts ct
-          LEFT JOIN connections c ON c.contact_id = ct.contact_id
-          WHERE ct.user_id = ?
-            AND ct.contact_status = ?
-            AND ct.deleted = 0
-            AND
-              c.connection_id = (
-                SELECT cc_connection_id FROM (
-                  SELECT
-                    cc.connection_id AS cc_connection_id,
-                    cc.created_at AS cc_created_at
-                  FROM connections cc
-                  WHERE cc.user_id = ct.user_id AND cc.contact_id = ct.contact_id
-                  ORDER BY cc_created_at DESC
-                  LIMIT 1
-                )
+getUserContactConnIds :: DB.Connection -> User -> Bool -> IO [ConnId]
+getUserContactConnIds db User {userId} toSubscribe =
+  map fromOnly <$> DB.query db (if toSubscribe then query <> " AND c.to_subscribe = 1" else query) (userId, CSActive)
+  where
+    query =
+      [sql|
+        SELECT c.agent_conn_id
+        FROM contacts ct
+        LEFT JOIN connections c ON c.contact_id = ct.contact_id
+        WHERE ct.user_id = ?
+          AND ct.contact_status = ?
+          AND ct.deleted = 0
+          AND
+            c.connection_id = (
+              SELECT cc_connection_id FROM (
+                SELECT
+                  cc.connection_id AS cc_connection_id,
+                  cc.created_at AS cc_created_at
+                FROM connections cc
+                WHERE cc.user_id = ct.user_id AND cc.contact_id = ct.contact_id
+                ORDER BY cc_created_at DESC
+                LIMIT 1
               )
-        |]
-        (userId, CSActive)
+            )
+      |]
 
 getConnectionById :: DB.Connection -> VersionRangeChat -> User -> Int64 -> ExceptT StoreError IO Connection
 getConnectionById db vr User {userId} connId = ExceptT $ do

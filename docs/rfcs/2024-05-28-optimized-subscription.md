@@ -41,3 +41,5 @@ Subscription errors for CLI (when connection error reporting is enabled) are rep
 > A generic constructor could be used instead, but then it would contain extra fields to form a message in View if matching the current output is desired.
 
 The textual names for connections can be requested for the subset of all connections that needs them with the same procedure that's used in `UP` handling.
+
+Since no entities are needed upfront and the connection-fetching functions are used only in `subscribeUserConnections` it is now possible to pass `onlyNeeded` flag directly. This obviates the need to fetch connections to subscribe, then triaging by entity type. This would improve startup for iOS devices that have been idle for a long time and accumulated lots of pending subscriptions.
