@@ -100,7 +100,7 @@
         <a href="/" class="dark:hidden lg:hidden ltr:mr-auto rtl:ml-auto"><img class="h-[32px]" src="/img/new/logo-symbol-light.svg" alt="" srcset=""></a>
         <a href="/" class="hidden dark:inline-block dark:lg:hidden lg:hidden ltr:mr-auto rtl:ml-auto"><img class="h-[32px]" src="/img/new/logo-symbol-dark.svg" alt="" srcset=""></a>
         
-        <nav class="bg-[#F0F1F2] dark:bg-gradient-radial-mobile dark:lg:bg-none lg:bg-transparent fixed top-[66px] left-0 right-0 bottom-0 lg:top-0 lg:relative" id="menu">
+        <nav class="bg-[#F0F1F2] dark:bg-gradient-radial-mobile dark:lg:bg-none lg:bg-transparent fixed top-[66px] left-0 right-0 bottom-0 h-[calc(100vh-66px)] lg:h-[66px] lg:top-0 lg:relative" id="menu">
             <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-5 xl:gap-10 px-4 lg:px-0 h-full">
                 <ul class="flex flex-col lg:flex-row lg:items-center gap-3 py-4 lg:py-0 lg:gap-5 xl:gap-8">
                     
@@ -163,6 +163,8 @@
                                 >Whitepaper
                                 <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
                             </a></li>
+                            <li><a href="/privacy" class="lg:px-[20px] inline-block"
+                                >Privacy Policy</a></li>
                             <li><a href="https://github.com/simplex-chat/simplexmq/blob/stable/protocol/simplex-messaging.md"
                                 target="_blank" class="lg:px-[20px] flex items-center gap-1"
                                 >SMP protocol
@@ -193,6 +195,12 @@
                                 <li><a href="/docs/translations.html" class=" lg:px-[20px] inline-block whitespace-nowrap">Translate SimpleX Chat</a></li>
                             
                                 <li><a href="/downloads/" class=" lg:px-[20px] inline-block whitespace-nowrap">Downloads</a></li>
+                            
+                                <li><a href="/transparency/" class=" lg:px-[20px] inline-block whitespace-nowrap">Transparency</a></li>
+                            
+                                <li><a href="/security/" class=" lg:px-[20px] inline-block whitespace-nowrap">Security</a></li>
+                            
+                                <li><a href="/faq/" class=" lg:px-[20px] inline-block whitespace-nowrap">FAQ</a></li>
                             
 
                             <hr class=" h-[1px] w-full dark:opacity-[0.1]">
@@ -235,7 +243,7 @@
                 </ul>
 
                 <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations"
-                    target="_blank" class="whitespace-nowrap flex items-center gap-1 self-center text-white dark:text-black text-[16px] font-medium tracking-[0.02em] rounded-[34px] bg-primary-light dark:bg-primary-dark py-3 lg:py-2 px-20 lg:px-5 mb-16 lg:mb-0"
+                    target="_blank" class="whitespace-nowrap flex items-center gap-1 self-center text-white dark:text-black text-[16px] font-medium tracking-[0.02em] rounded-[34px] bg-primary-light dark:bg-primary-dark py-3 lg:py-2 px-20 lg:px-5 mb-auto lg:mb-0"
                     >Donate
                 </a>
 
@@ -407,7 +415,7 @@ window.addEventListener('scroll',changeHeaderBg);
 <p>This is only possible when both devices are connected to the same local network. To send and receive messages mobile app has to be connected to the Internet.</p>
 <h3 id="quick-start-how-to-use-it" tabindex="-1">⚡️ Quick start - how to use it</h3>
 <p><strong>On desktop</strong></p>
-<p>If you don't have desktop app installed yet, <a href="https://simplex.chat/downloads/">download it</a> and create any chat profile - you don't need to use it, and when you create it there are no server requests sent and no accounts are created. Think about it as about user profile on your computer.</p>
+<p>If you don't have desktop app installed yet, <a href="/downloads/index.html">download it</a> and create any chat profile - you don't need to use it, and when you create it there are no server requests sent and no accounts are created. Think about it as about user profile on your computer.</p>
 <p>Then in desktop app settings choose <em>Link a mobile</em> - it will show a QR code.</p>
 <p><img src="./images/20231125-desktop1.png" width="170"> <img src="./images/arrow.png" width="24"> <img src="./images/20231125-desktop2.png" width="170"> <img src="./images/arrow.png" width="24"> <img src="./images/20231125-desktop3.png" width="170"> <img src="./images/arrow.png" width="24"> <img src="./images/20231125-desktop4.png" width="510"></p>
 <p><strong>On mobile</strong></p>
@@ -417,7 +425,7 @@ window.addEventListener('scroll',changeHeaderBg);
 <p>If it is an Android app, you can move the app to background, but iOS app has to remain open. In both cases, while you are using mobile profiles from desktop, you won't be able to use mobile app.</p>
 <p>The subsequent connections happen much faster - by default, the desktop app broadcasts its session address to the network, in encrypted form, and mobile app connects to it once you choose <em>Use from desktop</em> in mobile app settings.</p>
 <h3 id="how-does-it-work" tabindex="-1">How does it work?</h3>
-<p>The way we designed this solution avoided any security compromises, and the end-to-end encryption remained as secure as it was - it uses <a href="docs/glossary.html#double-ratchet-algorithm">double-ratchet algorithm</a>, with <a href="docs/glossary.html#forward-secrecy">perfect forward secrecy</a>, <a href="docs/glossary.html#post-compromise-security">post-compromise security</a> and deniability.</p>
+<p>The way we designed this solution avoided any security compromises, and the end-to-end encryption remained as secure as it was - it uses <a href="/docs/glossary.html#double-ratchet-algorithm">double-ratchet algorithm</a>, with <a href="/docs/glossary.html#forward-secrecy">perfect forward secrecy</a>, <a href="/docs/glossary.html#post-compromise-security">post-compromise security</a> and deniability.</p>
 <p>This solution is similar to WhatsApp and WeChat. But unlike these apps, no server is involved in the connection between mobile and desktop. The connection itself uses a new SimpleX Remote Control Protocol (XRCP) based on secure TLS 1.3 and additional quantum-resistant encryption inside TLS. You can read XRCP protocol specification and threat model in <a href="https://github.com/simplex-chat/simplexmq/blob/master/rfcs/2023-10-25-remote-control.md">this document</a>. We will soon be <a href="https://github.com/simplex-chat/simplex-chat/blob/master/docs/rfcs/2023-09-30-pq-double-ratchet.md">augmenting double ratchet</a> to be resistant to quantum computers as well.</p>
 <p>The downside of this approach is that mobile device has to be connected to the same local network as desktop. But the upside is that the connection is secure, and you do not need to have a copy of all your data on desktop, which usually has lower security than mobile.</p>
 <p>Please note, that the files you send, save or play from desktop app, and also images you view are automatically saved on your desktop device (encrypted by default except videos). To remove all these files you can unlink the paired mobile device from the desktop app settings – there will be an option soon allowing to remove the files without unlinking the mobile.</p>
@@ -457,8 +465,8 @@ window.addEventListener('scroll',changeHeaderBg);
 <p>You can find the full list of fixed bugs and small improvements in the <a href="https://github.com/simplex-chat/simplex-chat/releases/tag/v5.4.0">release notes</a>.</p>
 <h2 id="simplex-platform" tabindex="-1">SimpleX platform</h2>
 <p>Some links to answer the most common questions:</p>
-<p><a href="20220511-simplex-chat-v2-images-files.html#the-first-messaging-platform-without-user-identifiers">How can SimpleX deliver messages without user identifiers</a>.</p>
-<p><a href="20220711-simplex-chat-v3-released-ios-notifications-audio-video-calls-database-export-import-protocol-improvements.html#why-having-users-identifiers-is-bad-for-the-users">What are the risks to have identifiers assigned to the users</a>.</p>
+<p><a href="/blog/20220511-simplex-chat-v2-images-files.html#the-first-messaging-platform-without-user-identifiers">How can SimpleX deliver messages without user identifiers</a>.</p>
+<p><a href="/blog/20220711-simplex-chat-v3-released-ios-notifications-audio-video-calls-database-export-import-protocol-improvements.html#why-having-users-identifiers-is-bad-for-the-users">What are the risks to have identifiers assigned to the users</a>.</p>
 <p><a href="https://github.com/simplex-chat/simplex-chat#privacy-technical-details-and-limitations">Technical details and limitations</a>.</p>
 <p><a href="https://github.com/simplex-chat/simplex-chat/blob/stable/README.md#frequently-asked-questions">How SimpleX is different from Session, Matrix, Signal, etc.</a>.</p>
 <p>Please also see our <a href="https://simplex.chat">website</a>.</p>
@@ -496,11 +504,9 @@ window.addEventListener('scroll',changeHeaderBg);
                             SimpleX Chat protocol
                             <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
                         </a>
-                        <a href="https://github.com/simplex-chat/simplex-chat/blob/stable/PRIVACY.md"
-                            target="_blank"
+                        <a href="/privacy"
                             class="text-grey-black dark:text-white text-[14px] font-medium leading-[28px] tracking-[0.01em] mb-3 flex items-center gap-1">
-                            Terms & Privacy Policy
-                            <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
+                            Privacy Policy
                         </a>
                         <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations"
                             target="_blank"
@@ -594,7 +600,7 @@ window.addEventListener('scroll',changeHeaderBg);
                 </div>
             </article>
         </div>
-        <a href="#" class="text-grey-black dark:text-white text-[16px] text-center lg:ltr:text-left lg:rtl:text-right font-medium leading-[28px] tracking-[0.01em] block mt-[60px]">© 2020-2023 SimpleX | Open-Source Project</a>
+        <a href="#" class="text-grey-black dark:text-white text-[16px] text-center lg:ltr:text-left lg:rtl:text-right font-medium leading-[28px] tracking-[0.01em] block mt-[60px]">© 2020-2024 SimpleX | Open-Source Project</a>
     </div>
 </section>
 

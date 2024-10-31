@@ -100,7 +100,7 @@
         <a href="/" class="dark:hidden lg:hidden ltr:mr-auto rtl:ml-auto"><img class="h-[32px]" src="/img/new/logo-symbol-light.svg" alt="" srcset=""></a>
         <a href="/" class="hidden dark:inline-block dark:lg:hidden lg:hidden ltr:mr-auto rtl:ml-auto"><img class="h-[32px]" src="/img/new/logo-symbol-dark.svg" alt="" srcset=""></a>
         
-        <nav class="bg-[#F0F1F2] dark:bg-gradient-radial-mobile dark:lg:bg-none lg:bg-transparent fixed top-[66px] left-0 right-0 bottom-0 lg:top-0 lg:relative" id="menu">
+        <nav class="bg-[#F0F1F2] dark:bg-gradient-radial-mobile dark:lg:bg-none lg:bg-transparent fixed top-[66px] left-0 right-0 bottom-0 h-[calc(100vh-66px)] lg:h-[66px] lg:top-0 lg:relative" id="menu">
             <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-5 xl:gap-10 px-4 lg:px-0 h-full">
                 <ul class="flex flex-col lg:flex-row lg:items-center gap-3 py-4 lg:py-0 lg:gap-5 xl:gap-8">
                     
@@ -163,6 +163,8 @@
                                 >Whitepaper
                                 <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
                             </a></li>
+                            <li><a href="/privacy" class="lg:px-[20px] inline-block"
+                                >Privacy Policy</a></li>
                             <li><a href="https://github.com/simplex-chat/simplexmq/blob/stable/protocol/simplex-messaging.md"
                                 target="_blank" class="lg:px-[20px] flex items-center gap-1"
                                 >SMP protocol
@@ -193,6 +195,12 @@
                                 <li><a href="/docs/translations.html" class=" lg:px-[20px] inline-block whitespace-nowrap">Translate SimpleX Chat</a></li>
                             
                                 <li><a href="/downloads/" class=" lg:px-[20px] inline-block whitespace-nowrap">Downloads</a></li>
+                            
+                                <li><a href="/transparency/" class=" lg:px-[20px] inline-block whitespace-nowrap">Transparency</a></li>
+                            
+                                <li><a href="/security/" class=" lg:px-[20px] inline-block whitespace-nowrap">Security</a></li>
+                            
+                                <li><a href="/faq/" class=" lg:px-[20px] inline-block whitespace-nowrap">FAQ</a></li>
                             
 
                             <hr class=" h-[1px] w-full dark:opacity-[0.1]">
@@ -235,7 +243,7 @@
                 </ul>
 
                 <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations"
-                    target="_blank" class="whitespace-nowrap flex items-center gap-1 self-center text-white dark:text-black text-[16px] font-medium tracking-[0.02em] rounded-[34px] bg-primary-light dark:bg-primary-dark py-3 lg:py-2 px-20 lg:px-5 mb-16 lg:mb-0"
+                    target="_blank" class="whitespace-nowrap flex items-center gap-1 self-center text-white dark:text-black text-[16px] font-medium tracking-[0.02em] rounded-[34px] bg-primary-light dark:bg-primary-dark py-3 lg:py-2 px-20 lg:px-5 mb-auto lg:mb-0"
                     >Donate
                 </a>
 
@@ -373,11 +381,11 @@ window.addEventListener('scroll',changeHeaderBg);
       <div class="py-6 md:p-[60px]"><h1 id="simplex-chat-reviews-and-v43-released-with-instant-voice-messages-irreversible-deletion-of-sent-messages-and-improved-server-configuration" tabindex="-1">SimpleX Chat reviews and v4.3 released – with instant voice messages, irreversible deletion of sent messages and improved server configuration.</h1>
 <p><strong>Published:</strong> Dec 6, 2022</p>
 <h2 id="simplex-chat-reviews" tabindex="-1">SimpleX Chat reviews</h2>
-<p>Since we published <a href="https://simplex.chat/blog/20221108-simplex-chat-v4.2-security-audit-new-website.html">the security assessment of SimpleX Chat</a> completed by Trail of Bits in November, several sites published the reviews and included it in their recommendations:</p>
+<p>Since we published <a href="/blog/20221108-simplex-chat-v4.2-security-audit-new-website.html">the security assessment of SimpleX Chat</a> completed by Trail of Bits in November, several sites published the reviews and included it in their recommendations:</p>
 <ul>
 <li>Privacy Guides added SimpleX Chat to <a href="https://www.privacyguides.org/real-time-communication/#simplex-chat">the recommended private and secure messengers</a>.</li>
 <li>Mike Kuketz – a well-known security expert – published <a href="https://www.kuketz-blog.de/simplex-eindruecke-vom-messenger-ohne-identifier/">the review of SimpleX Chat</a> and added it to <a href="https://www.messenger-matrix.de">the messenger matrix</a>.</li>
-<li>Supernova published <a href="https://supernova.tilde.team/detailed_reviews.html#simplex">the review</a> and increased <a href="https://supernova.tilde.team/messengers.html">SimpleX Chat recommendation ratings</a>.</li>
+<li>Supernova published <a href="https://supernovas.space/detailed_reviews.html#simplex">the review</a> and increased <a href="https://supernovas.space/messengers.html">SimpleX Chat recommendation ratings</a>.</li>
 </ul>
 <h2 id="whats-new-in-v43" tabindex="-1">What's new in v4.3</h2>
 <ul>
@@ -432,9 +440,9 @@ window.addEventListener('scroll',changeHeaderBg);
 <p>The new version does not allow them by default, but it can be enabled by group owners in the group settings when the group is created or at any later moment.</p>
 <h2 id="simplex-platform" tabindex="-1">SimpleX platform</h2>
 <p>Some links to answer the most common questions:</p>
-<p><a href="20220511-simplex-chat-v2-images-files.html#the-first-messaging-platform-without-user-identifiers">How can SimpleX deliver messages without user identifiers</a>.</p>
-<p><a href="20220711-simplex-chat-v3-released-ios-notifications-audio-video-calls-database-export-import-protocol-improvements.html#why-having-users-identifiers-is-bad-for-the-users">What are the risks to have identifiers assigned to the users</a>.</p>
-<p><a href="20220723-simplex-chat-v3.1-tor-groups-efficiency.html#privacy-technical-details-and-limitations">Technical details and limitations</a>.</p>
+<p><a href="/blog/20220511-simplex-chat-v2-images-files.html#the-first-messaging-platform-without-user-identifiers">How can SimpleX deliver messages without user identifiers</a>.</p>
+<p><a href="/blog/20220711-simplex-chat-v3-released-ios-notifications-audio-video-calls-database-export-import-protocol-improvements.html#why-having-users-identifiers-is-bad-for-the-users">What are the risks to have identifiers assigned to the users</a>.</p>
+<p><a href="/blog/20220723-simplex-chat-v3.1-tor-groups-efficiency.html#privacy-technical-details-and-limitations">Technical details and limitations</a>.</p>
 <p><a href="https://github.com/simplex-chat/simplex-chat/blob/stable/README.md#frequently-asked-questions">How SimpleX is different from Session, Matrix, Signal, etc.</a>.</p>
 <p>Please also see the information on our <a href="https://simplex.chat">new website</a> - it also answers all these questions.</p>
 <h2 id="help-us-with-donations" tabindex="-1">Help us with donations</h2>
@@ -479,11 +487,9 @@ window.addEventListener('scroll',changeHeaderBg);
                             SimpleX Chat protocol
                             <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
                         </a>
-                        <a href="https://github.com/simplex-chat/simplex-chat/blob/stable/PRIVACY.md"
-                            target="_blank"
+                        <a href="/privacy"
                             class="text-grey-black dark:text-white text-[14px] font-medium leading-[28px] tracking-[0.01em] mb-3 flex items-center gap-1">
-                            Terms & Privacy Policy
-                            <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
+                            Privacy Policy
                         </a>
                         <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations"
                             target="_blank"
@@ -577,7 +583,7 @@ window.addEventListener('scroll',changeHeaderBg);
                 </div>
             </article>
         </div>
-        <a href="#" class="text-grey-black dark:text-white text-[16px] text-center lg:ltr:text-left lg:rtl:text-right font-medium leading-[28px] tracking-[0.01em] block mt-[60px]">© 2020-2023 SimpleX | Open-Source Project</a>
+        <a href="#" class="text-grey-black dark:text-white text-[16px] text-center lg:ltr:text-left lg:rtl:text-right font-medium leading-[28px] tracking-[0.01em] block mt-[60px]">© 2020-2024 SimpleX | Open-Source Project</a>
     </div>
 </section>
 

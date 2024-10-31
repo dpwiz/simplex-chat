@@ -100,7 +100,7 @@
         <a href="/" class="dark:hidden lg:hidden ltr:mr-auto rtl:ml-auto"><img class="h-[32px]" src="/img/new/logo-symbol-light.svg" alt="" srcset=""></a>
         <a href="/" class="hidden dark:inline-block dark:lg:hidden lg:hidden ltr:mr-auto rtl:ml-auto"><img class="h-[32px]" src="/img/new/logo-symbol-dark.svg" alt="" srcset=""></a>
         
-        <nav class="bg-[#F0F1F2] dark:bg-gradient-radial-mobile dark:lg:bg-none lg:bg-transparent fixed top-[66px] left-0 right-0 bottom-0 lg:top-0 lg:relative" id="menu">
+        <nav class="bg-[#F0F1F2] dark:bg-gradient-radial-mobile dark:lg:bg-none lg:bg-transparent fixed top-[66px] left-0 right-0 bottom-0 h-[calc(100vh-66px)] lg:h-[66px] lg:top-0 lg:relative" id="menu">
             <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-5 xl:gap-10 px-4 lg:px-0 h-full">
                 <ul class="flex flex-col lg:flex-row lg:items-center gap-3 py-4 lg:py-0 lg:gap-5 xl:gap-8">
                     
@@ -163,6 +163,8 @@
                                 >Whitepaper
                                 <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
                             </a></li>
+                            <li><a href="/privacy" class="lg:px-[20px] inline-block"
+                                >Privacy Policy</a></li>
                             <li><a href="https://github.com/simplex-chat/simplexmq/blob/stable/protocol/simplex-messaging.md"
                                 target="_blank" class="lg:px-[20px] flex items-center gap-1"
                                 >SMP protocol
@@ -193,6 +195,12 @@
                                 <li><a href="/docs/translations.html" class=" lg:px-[20px] inline-block whitespace-nowrap">Translate SimpleX Chat</a></li>
                             
                                 <li><a href="/downloads/" class=" lg:px-[20px] inline-block whitespace-nowrap">Downloads</a></li>
+                            
+                                <li><a href="/transparency/" class=" lg:px-[20px] inline-block whitespace-nowrap">Transparency</a></li>
+                            
+                                <li><a href="/security/" class=" lg:px-[20px] inline-block whitespace-nowrap">Security</a></li>
+                            
+                                <li><a href="/faq/" class=" lg:px-[20px] inline-block whitespace-nowrap">FAQ</a></li>
                             
 
                             <hr class=" h-[1px] w-full dark:opacity-[0.1]">
@@ -235,7 +243,7 @@
                 </ul>
 
                 <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations"
-                    target="_blank" class="whitespace-nowrap flex items-center gap-1 self-center text-white dark:text-black text-[16px] font-medium tracking-[0.02em] rounded-[34px] bg-primary-light dark:bg-primary-dark py-3 lg:py-2 px-20 lg:px-5 mb-16 lg:mb-0"
+                    target="_blank" class="whitespace-nowrap flex items-center gap-1 self-center text-white dark:text-black text-[16px] font-medium tracking-[0.02em] rounded-[34px] bg-primary-light dark:bg-primary-dark py-3 lg:py-2 px-20 lg:px-5 mb-auto lg:mb-0"
                     >Donate
                 </a>
 
@@ -393,8 +401,11 @@ window.addEventListener('scroll',changeHeaderBg);
 <p>While SimpleX Chat Ltd is a commercial company, SimpleX Chat software is and will remain open-source. We believe that this way we will create much more value both for the end users, and also for the shareholders and the employees of the company.</p>
 <p>Many large tech companies prioritizing value extraction over value creation earned a bad reputation for all businesses, particularly in the communities that value decentralization and privacy. But commercial objectives do not have to result in exploitation. Our goal is to build a new kind of communication network, and also an application platform, that is private by design, fully decentralized and not owned by any single entity, where SimpleX Chat Ltd is one of many organizations that operate the network. I shared my thoughts about how the Internet and privacy might evolve in the interview in <a href="https://optoutpod.com/episodes/s3e02-simplexchat/">Opt Out Podcast</a>.</p>
 <h3 id="how-is-it-funded-and-what-is-the-business-model" tabindex="-1">How is it funded and what is the business model?</h3>
-<p>We started working full-time on the project in 2021 when <a href="https://www.linkedin.com/in/portmanwills/">Portman Wills</a> and <a href="https://www.linkedin.com/in/peterbriffett/">Peter Briffett</a> (the founders of <a href="https://wagestream.com/en/">Wagestream</a> where I led the engineering team) supported the company very early on, and several other angel investors joined later. In July 2022 SimpleX Chat raised a pre-seed funding from the VC fund <a href="https://www.villageglobal.vc">Village Global</a> - its co-founder <a href="https://casnocha.com">Ben Casnocha</a> was very excited about our vision of privacy-first fully decentralized messaging and community platform, both for the individual users and for the companies, independent of any crypto-currencies, that might grow to replace large centralized platforms, such as WhatsApp, Telegram and Signal.</p>
-<p>Overall we raised from our investors approximately $370,000 for a small share of the company to allow the project team working full time for almost two years, funding product design and development, infrastructure, and also <a href="https://simplex.chat/blog/20221108-simplex-chat-v4.2-security-audit-new-website.html">the security assessment by Trail of Bits</a>. A large part of this money is not spent yet.</p>
+<p>We started working full-time on the project in 2021 when <a href="https://www.linkedin.com/in/portmanwills/">Portman Wills</a> and <a href="https://www.linkedin.com/in/peterbriffett/">Peter Briffett</a> (the founders of <a href="https://wagestream.com/en/">Wagestream</a> where I led the engineering team) supported the company very early on, and several other angel investors joined later. In July 2022 SimpleX Chat raised a pre-seed funding from the VC fund <a href="https://www.villageglobal.vc">Village Global</a> - its co-founder <a href="https://www.villageglobal.vc/team/ben-casnocha">Ben Casnocha</a> was very excited about our vision of privacy-first fully decentralized messaging and community platform, both for the individual users and for the companies, independent of any crypto-currencies, that might grow to replace large centralized platforms, such as WhatsApp, Telegram and Signal.</p>
+<blockquote>
+<p>Edit: please see the comment from Ben Casnocha about this investment in <a href="/blog/20240814-simplex-chat-vision-funding-v6-private-routing-new-user-experience.html">our post from August 14, 2024</a>.</p>
+</blockquote>
+<p>Overall we raised from our investors approximately $370,000 for a small share of the company to allow the project team working full time for almost two years, funding product design and development, infrastructure, and also <a href="/blog/20221108-simplex-chat-v4.2-security-audit-new-website.html">the security assessment by Trail of Bits</a>. A large part of this money is not spent yet.</p>
 <p>The project was hugely supported by the users as well - collectively, <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations">you donated</a> over $25,000. Without these donations the investment we raised would not be possible, because we believe that voluntary user donations can sustain the project in the long term – it already covers all infrastructure costs. There are only two ways an Internet service can exist - either users are paying for it, or the users data becomes the product for the real customers, as happened with many large Internet companies. In the latter case the users are losing much more money than they are saving by giving away their privacy and the rights to the content they create on the centralized platforms.</p>
 <p>Going forward we plan to keep the basic usage of the platform free, and at the same time we will be providing the benefits to the project sponsors. For example, there will be additional app icons and user profile badges. There also will be higher file transfer limits – currently we don't limit it at all, only limiting the file size, but it's unlikely to be sustainable. In any case, the app will remain highly usable for everyone for free, and fully open-source. Several other apps are already being developed based on our app core, leading to a fully decentralized network.</p>
 <h3 id="what-is-next" tabindex="-1">What is next?</h3>
@@ -402,14 +413,14 @@ window.addEventListener('scroll',changeHeaderBg);
 <ul>
 <li>more reliable and resilient, by adding redundancy into the message delivery and delivery receipts,</li>
 <li>more private, by automating rotation of the servers used to deliver messages and by adding delivery relays to better protect IP addresses of the users,</li>
-<li>more usable by adding and improving the functions users are expecting in messengers, and also adding some unique functions, like we did with <a href="20220901-simplex-chat-v3.2-incognito-mode.html#incognito-mode">incognito mode</a>, <a href="20230103-simplex-chat-v4.4-disappearing-messages.html#live-messages">live messages</a> and <a href="20230328-simplex-chat-v4-6-hidden-profiles.html#hidden-chat-profiles">hidden profiles</a>.</li>
+<li>more usable by adding and improving the functions users are expecting in messengers, and also adding some unique functions, like we did with <a href="/blog/20220901-simplex-chat-v3.2-incognito-mode.html#incognito-mode">incognito mode</a>, <a href="/blog/20230103-simplex-chat-v4.4-disappearing-messages.html#live-messages">live messages</a> and <a href="/blog/20230328-simplex-chat-v4-6-hidden-profiles.html#hidden-chat-profiles">hidden profiles</a>.</li>
 </ul>
 <p>One major initiative we will kick-off this year is the support for large, fully decentralized and private communities and groups not hosted on any servers – something that no Internet platform achieved so far in as private and efficient way as we plan to build it.</p>
 <p>To accelerate product development and growth we will be raising a seed funding this year, both from the VCs and angel investors, and we also might offer our users an opportunity to participate in the crowd funding round on the same terms as other investors, allowing to both support the project and to benefit from its future growth. <a href="https://simplex.chat#join-simplex">Subscribe to our updates</a> not to miss it, connect to the team in SimpleX Chat and <a href="https://github.com/simplex-chat/simplex-chat#join-user-groups">join users' groups</a>.</p>
 <h2 id="whats-new-in-v50" tabindex="-1">What's new in v5.0</h2>
 <h3 id="send-videos-and-files-up-to-1gb" tabindex="-1">Send videos and files up to 1gb!</h3>
 <img src="./images/20230422-video.png" width="288" class="float-to-left">
-<p>In the beginning of March <a href="20230301-simplex-file-transfer-protocol.html">we released servers and command-line utility to send and receive files via XFTP protocol</a> - a very private and secure protocol that sends end-to-end encrypted files in chunks, protecting meta-data better than any alternatives we know of.</p>
+<p>In the beginning of March <a href="/blog/20230301-simplex-file-transfer-protocol.html">we released servers and command-line utility to send and receive files via XFTP protocol</a> - a very private and secure protocol that sends end-to-end encrypted files in chunks, protecting meta-data better than any alternatives we know of.</p>
 <p>Now this protocol is fully integrated in SimpleX Chat, and all files except small voice messages are sent using this protocol (small voice messages are sent as usual messages). Not only it is much faster than before - with the fast Internet connection I can send 25Mb file in 3 seconds and 1gb file in 2 minutes (for most users it's capped at the available Internet bandwidth), it has two other major advantages making it more usable:</p>
 <ul>
 <li>the file sent to a group has to be uploaded only once, regardless of the group size.</li>
@@ -429,7 +440,7 @@ window.addEventListener('scroll',changeHeaderBg);
 <p>Secondly, Android client now supports configuring host and port of the SOCKS proxy, allowing to use apps other than Orbot and also to run SOCKS proxy in the local network, to save mobile device battery.</p>
 <h2 id="simplex-platform" tabindex="-1">SimpleX platform</h2>
 <p>Some links to answer the most common questions:</p>
-<p><a href="20221108-simplex-chat-v4.2-security-audit-new-website.html">SimpleX Chat security assessment</a>.</p>
+<p><a href="/blog/20221108-simplex-chat-v4.2-security-audit-new-website.html">SimpleX Chat security assessment</a>.</p>
 <p><a href="https://simplex.chat/#how-simplex-works">How can SimpleX deliver messages without user identifiers</a>.</p>
 <p><a href="https://simplex.chat/#why-ids-bad-for-privacy">What are the risks to have identifiers assigned to the users</a>.</p>
 <p><a href="https://github.com/simplex-chat/simplex-chat#privacy-technical-details-and-limitations">Technical details and limitations</a>.</p>
@@ -469,11 +480,9 @@ window.addEventListener('scroll',changeHeaderBg);
                             SimpleX Chat protocol
                             <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
                         </a>
-                        <a href="https://github.com/simplex-chat/simplex-chat/blob/stable/PRIVACY.md"
-                            target="_blank"
+                        <a href="/privacy"
                             class="text-grey-black dark:text-white text-[14px] font-medium leading-[28px] tracking-[0.01em] mb-3 flex items-center gap-1">
-                            Terms & Privacy Policy
-                            <svg class="float-right" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg>
+                            Privacy Policy
                         </a>
                         <a href="https://github.com/simplex-chat/simplex-chat#help-us-with-donations"
                             target="_blank"
@@ -567,7 +576,7 @@ window.addEventListener('scroll',changeHeaderBg);
                 </div>
             </article>
         </div>
-        <a href="#" class="text-grey-black dark:text-white text-[16px] text-center lg:ltr:text-left lg:rtl:text-right font-medium leading-[28px] tracking-[0.01em] block mt-[60px]">© 2020-2023 SimpleX | Open-Source Project</a>
+        <a href="#" class="text-grey-black dark:text-white text-[16px] text-center lg:ltr:text-left lg:rtl:text-right font-medium leading-[28px] tracking-[0.01em] block mt-[60px]">© 2020-2024 SimpleX | Open-Source Project</a>
     </div>
 </section>
 
